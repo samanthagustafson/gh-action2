@@ -7,10 +7,11 @@ const octokit = new Octokit({
   userAgent: APPSCAN_CODESWEEP
 })
 const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
-const url =  '/repos/'+owner+'/'+repo+'/{path}'; // leave this as is
-const ref =  'heads/master';
 const owner = ownerRepo[0];
 const repo = ownerRepo[1];
+const url =  '/repos/'+owner+'/'+repo+'/{path}'; // leave this as is
+const ref =  'heads/master';
+
 
 /*
 const pushContents = async () => {
