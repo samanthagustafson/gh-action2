@@ -41,7 +41,7 @@ octokit.rest.pulls.create({
   owner: ownerRepo[0],
   repo: ownerRepo[1],
   head: 'test01', //new with fixes branch
-  base: 'master', //original user branch
+  base: 'main', //original user branch
   title: 'This is a PR',
   body: 'This is the body',
 }).then(data => console.log("The pullrequest was successfuly created!"));
