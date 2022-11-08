@@ -20,7 +20,7 @@ const main = async () => {
       repo,
   });
   const latestCommitSHA = commits.data[0].sha;
-  const treeSha = response.data[0].commit.tree.sha
+  const treeSha = commits.data[0].commit.tree.sha
   console.log(`latest commit sha: ${latestCommitSha}`);
 
   console.log('creating tree');
