@@ -11,7 +11,7 @@ const owner = ownerRepo[0];
 const repo = ownerRepo[1];
 //const url =  '/repos/'+owner+'/'+repo+'/{path}'; // leave this as is
 const ref =  'heads/master/new';
-
+var latestCommitSHA;
 
 
 const pushContents = async () => {
@@ -20,7 +20,7 @@ const pushContents = async () => {
       repo,
   });
 
-  const latestCommitSHA = commits.data[0].sha;
+  latestCommitSHA = commits.data[0].sha;
 }
 //pretend user has already opened initial PR against default branch, which triggered codesweep to run
 //pretend suggested fixes were selected and copied
