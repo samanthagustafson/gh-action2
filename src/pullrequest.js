@@ -46,7 +46,7 @@ const main = async () => {
     repo,
     message: 'Commit message',
     tree: newTreeSha,
-    parents: [latestCommitSha],
+    parents: [latestCommitSHA],
     author: {
       name: 'First Last',
       email: 'name@email.com'
