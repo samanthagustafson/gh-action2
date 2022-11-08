@@ -9,11 +9,11 @@ const octokit = new Octokit({
 const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
 const owner = ownerRepo[0];
 const repo = ownerRepo[1];
-const url =  '/repos/'+owner+'/'+repo+'/{path}'; // leave this as is
-const ref =  'heads/master';
+//const url =  '/repos/'+owner+'/'+repo+'/{path}'; // leave this as is
+const ref =  'heads/master/new';
 
 
-/*
+
 const pushContents = async () => {
   const commits = await octokit.repos.listCommits({
       owner,
@@ -30,13 +30,13 @@ const pushContents = async () => {
 // https://stackoverflow.com/questions/15096331/github-api-how-to-find-the-branches-of-a-pull-request
 
 octokit.rest.git.createRef({
-  owner: ownerRepo[0],
-  repo: ownerRepo[1],
-  ref, //refs/<>/<>-withCodeFix
-  sha,
+  owner: owner,
+  repo: repo,
+  ref: ref, //refs/<>/<>-withCodeFix
+  sha: latestCommitSHA,
 });
-*/
- 
+
+/* 
 //then: create PR to merge new branch into original
 //https://octokit.github.io/rest.js/v18#pulls-create
 
@@ -47,4 +47,8 @@ octokit.rest.pulls.create({
   base: 'main', //original user branch
   title: 'This is a PR',
   body: 'This is the body',
-}).then(data => console.log("The pullrequest was successfuly created!"));
+}).then(data => console.log("The pullrequest was successfuly created!"))
+.catch(any){
+  data => console.log("There was an error creating the pullrequest!")
+}
+*/
