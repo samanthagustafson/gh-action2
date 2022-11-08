@@ -1,5 +1,5 @@
 name: 'HCL AppScan CodeSweep'
 description: 'Scan for security issues in code'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'src/pullrequest.js'
