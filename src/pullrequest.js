@@ -10,7 +10,7 @@ const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
 const owner = ownerRepo[0];
 const repo = ownerRepo[1];
 
-const base = 'test03';              //name of branch of PR
+const base = 'test04';              //name of branch of PR
 const head = base+'-withCodeFix';   //name of new branch we create
 
 const main = async () => {
