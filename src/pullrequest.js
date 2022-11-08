@@ -21,7 +21,7 @@ const main = async () => {
   });
   const latestCommitSHA = commits.data[0].sha;
   const treeSha = commits.data[0].commit.tree.sha
-  console.log(`latest commit sha: ${latestCommitSha}`);
+  console.log(`latest commit sha: ${latestCommitSHA}`);
 
   console.log('creating tree');
   response = await octokit.git.createTree({
