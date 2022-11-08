@@ -9,8 +9,9 @@ const octokit = new Octokit({
 const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
 const owner = ownerRepo[0];
 const repo = ownerRepo[1];
-const head = 'new-branch'; //name of new branch we create
-const base = 'test03'; //name of branch of PR
+
+const base = 'test03';                //name of branch of PR
+const head = `${base}-withCodeFix`;   //name of new branch we create
 
 
 const main = async () => {
@@ -20,26 +21,52 @@ const main = async () => {
       repo,
   });
   const latestCommitSHA = commits.data[0].sha;
-  console.log(`commit sha: ${latestCommitSha}`);
-  
+  const treeSha = response.data[0].commit.tree.sha
+  console.log(`latest commit sha: ${latestCommitSha}`);
+
+  console.log('creating tree');
+  response = await octokit.git.createTree({
+    owner,
+    repo,
+    base_tree: treeSha,
+    tree: [
+      { path: 'test_file', mode: '100644', content: '' },
+    ]
+  });
+  const newTreeSha = response.data.sha;
+
 //pretend user has already opened initial PR against default branch, which triggered codesweep to run
 //pretend suggested fixes were selected and copied
 
 //next step: create new branch to hold code fixes
 //to get current branch name need to parse the PR JSON for head.ref 
 // https://stackoverflow.com/questions/15096331/github-api-how-to-find-the-branches-of-a-pull-request
-  
+  console.log('creating commit')
+  response = await octokit.git.createCommit({
+    owner,
+    repo,
+    message: 'Commit message',
+    tree: newTreeSha,
+    parents: [latestCommitSha],
+    author: {
+      name: 'First Last',
+      email: 'name@email.com'
+    }
+  });
+  const newCommitSha = response.data.sha;
+  console.log(`new commit sha: ${newCommitSha}`);
+
   /*const baseBranchRef = await octokit.git.getRef({
     owner,
     repo,
-    ref: `refs/heads/${baseBranch}`,
+    ref: `refs/heads/${base}`,
   });*/
   console.log(`creating branch ${head}`)
   const newBranchRef = await octokit.git.createRef({
     owner: owner,
     repo: repo,
-    ref: `refs/heads/${head}`, //refs/<>/<>-withCodeFix
-    sha: baseBranchRef.data.object.sha,
+    ref: `refs/heads/${head}`, //refs/heads/${baseBranch}-withCodeFix
+    sha: newCommitSha,
   });
 
 //then: create PR to merge new branch into original
