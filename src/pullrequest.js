@@ -11,9 +11,9 @@ const owner = ownerRepo[0];
 const repo = ownerRepo[1];
 
 const base = 'test03';                //name of branch of PR
-const head = `${base}-withCodeFix`;   //name of new branch we create
+const head = base+'-withCodeFix';   //name of new branch we create
 
-
+main();
 const main = async () => {
   console.log('getting latest commit sha')
   const commits = await octokit.repos.listCommits({
@@ -83,4 +83,4 @@ const main = async () => {
   });
   console.log('Pull request created');
 
-}
+};
