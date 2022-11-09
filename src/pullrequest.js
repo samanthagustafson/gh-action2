@@ -15,9 +15,11 @@ const issue = process.env.GITHUB_REF_NAME.split('/');
 const issueNumber = issue[0];
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
+var response;
+
 const main = async () => {
 
-  const response = await octokit.repos.listCommits({
+  response = await octokit.repos.listCommits({
       owner: owner,
       repo: repo,
   });
