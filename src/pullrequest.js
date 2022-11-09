@@ -63,8 +63,7 @@ const main = async () => {
     body: `${baseBranch} with AppScan CodeSweep code fixes applied.`,
   });
   console.log('[CodeSweep] Pull request created.');
-  const url = response.data.number;
-  console.log(`created pr number ${url}`);
+  console.log(`Pull request created: ${response.data.html_url}`)
 
   //comment with link to original PR
   octokit.issues.createComment({
