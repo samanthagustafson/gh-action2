@@ -39,7 +39,7 @@ const main = async () => {
   response = await octokit.git.createCommit({
     owner: owner,
     repo: repo,
-    message: `[AppScan CodeSweep] Applied code fixes...`,
+    message: `[AppScan CodeSweep] Applied code fixes`,
     tree: newTreeSha,
     parents: [latestCommitSha]
   });
@@ -60,7 +60,7 @@ const main = async () => {
     head: headBranch, //new with fixes branch
     base: baseBranch, //original user branch
     title: `${baseBranch}-withCodeFixes`,
-    body: `This PR is a result of AppScan CodeSweep having applied the suggested code fixes to ${issueNumber}.`,
+    body: `This PR is a result of AppScan CodeSweep having applied the suggested code fixes to #${issueNumber}.`,
   });
   console.log('[CodeSweep] Pull request created.');
 
@@ -71,7 +71,7 @@ const main = async () => {
     owner,
     repo,
     issue_number: issueNumber,
-    body: `[AppScan CodeSweep] This Pull-Request is referenced in ${newPR}.`
+    body: `AppScan CodeSweep has created a copy of this branch and automatically applied the suggested code fixes. Approve and merge ${newPR} first.`
   })
 };
 
