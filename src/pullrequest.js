@@ -46,7 +46,7 @@ const main = async () => {
   const newCommitSha = response.data.sha;
 
   console.log(`[CodeSweep] Creating new branch: ${headBranch}...`)
-  octokit.git.createRef({
+  await octokit.git.createRef({
     owner: owner,
     repo: repo,
     ref: `refs/heads/${headBranch}`, 
