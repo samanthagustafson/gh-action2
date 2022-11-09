@@ -65,7 +65,7 @@ const main = async () => {
     body: `${baseBranch} with AppScan CodeSweep code fixes applied.`,
   });
   console.log('[CodeSweep] Pull request created.');
-  const url = response.issue_url;
+  const url = response.id;
   console.log(`issue url ${url}`);
 
   //comment with link to original PR
