@@ -4,7 +4,8 @@ const { Octokit } = require('@octokit/rest');
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
   baseUrl: process.env.GITHUB_API_URL,
-  userAgent: APPSCAN_CODESWEEP
+  userAgent: APPSCAN_CODESWEEP,
+  baseBranch: process.env.GITHUB_REF_NAME
 })
 const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
 const owner = ownerRepo[0];
@@ -14,6 +15,7 @@ const base = 'test05';              //name of base branch of PR - hardcoded now,
 const head = base+'-withCodeFix';   //name of new branch we create off of the base
 
 const main = async () => {
+  console.log(`base branch: ${baseBranch}`);
   console.log('[CodeSweep] Getting latest commit SHA...')
   const commits = await octokit.repos.listCommits({
       owner,
