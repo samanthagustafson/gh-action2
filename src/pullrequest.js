@@ -14,18 +14,15 @@ const baseBranch = process.env.GITHUB_HEAD_REF; //name of base branch of PR
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
 const main = async () => {
-  console.log('[CodeSweep] Getting latest commit SHA...')
+
   const commits = await octokit.repos.listCommits({
       owner,
       repo,
   });
 
-  const latestCommitSha = commits.data[0].sha; //latest commit in user PR
+  const latestCommitSha = commits.data[0].sha;
   const treeSha = commits.data[0].commit.tree.sha
-  console.log(`[CodeSweep] Latest commit SHA: ${latestCommitSha}`);
-  console.log(`[CodeSweep] Latest tree SHA: ${treeSha}`);
 
-  console.log('[CodeSweep] Creating tree...');
   response = await octokit.git.createTree({
     owner,
     repo,
@@ -35,30 +32,23 @@ const main = async () => {
     ]
   });
   const newTreeSha = response.data.sha;
-  console.log(`[CodeSweep] Created tree: ${newTreeSha}`);
 
-  console.log('[CodeSweep] Creating commit...')
+  console.log('[CodeSweep] Creating commit with code fixes...')
   response = await octokit.git.createCommit({
     owner,
     repo,
     message: `[AppScan CodeSweep] Applied code fixes to ${baseBranch} branch`,
     tree: newTreeSha,
     parents: [latestCommitSha],
-    author: {
+    committer: {
       name: 'First Last',
       email: 'name@email.com'
     }
   });
   const newCommitSha = response.data.sha;
-  console.log(`[CodeSweep] New commit SHA: ${newCommitSha}`);
 
-  /*const baseBranchRef = await octokit.git.getRef({
-    owner,
-    repo,
-    ref: `refs/heads/${base}`,
-  });*/
   console.log(`[CodeSweep] Creating branch ${headBranch}...`)
-  const newBranchRef = await octokit.git.createRef({
+  await octokit.git.createRef({
     owner: owner,
     repo: repo,
     ref: `refs/heads/${headBranch}`, //refs/heads/${baseBranch}-withCodeFix
