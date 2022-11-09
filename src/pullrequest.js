@@ -54,7 +54,7 @@ const main = async () => {
   });
 
   console.log('[CodeSweep] Creating pull request...');
-  response = octokit.pulls.create({
+  response = await octokit.pulls.create({
     owner: owner,
     repo: repo,
     head: headBranch, //new with fixes branch
