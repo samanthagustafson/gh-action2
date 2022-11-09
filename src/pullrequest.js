@@ -11,6 +11,8 @@ const owner = ownerRepo[0];
 const repo = ownerRepo[1];
 
 const baseBranch = process.env.GITHUB_HEAD_REF; //name of base branch of PR
+const issueNumber = process.env.GITHUB_REF_NAME.split('/');
+const issue = issueNumer[0];
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
 const main = async () => {
@@ -37,7 +39,7 @@ const main = async () => {
   response = await octokit.git.createCommit({
     owner,
     repo,
-    message: `[AppScan CodeSweep] Applied code fixes to ${baseBranch} branch`,
+    message: `[AppScan CodeSweep] Applied code fixes to ${baseBranch}`,
     tree: newTreeSha,
     parents: [latestCommitSha]
   });
@@ -47,12 +49,9 @@ const main = async () => {
   await octokit.git.createRef({
     owner: owner,
     repo: repo,
-    ref: `refs/heads/${headBranch}`, //refs/heads/${baseBranch}-withCodeFix
+    ref: `refs/heads/${headBranch}`, //${baseBranch}-withCodeFix
     sha: newCommitSha,
   });
-
-//then: create PR to merge new branch into original
-//https://octokit.github.io/rest.js/v18#pulls-create
 
   console.log('[CodeSweep] Creating pull request...');
   octokit.rest.pulls.create({
@@ -65,5 +64,12 @@ const main = async () => {
   });
   console.log('[CodeSweep] Pull request created.');
 
+  //comment with link to original PR
+  await octokit.issues.createComment({
+    owner,
+    repo,
+    issue_number: issue,
+    body: `This is a comment on PR ${issue}`
+  })
 };
 main();
