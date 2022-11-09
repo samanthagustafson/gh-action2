@@ -60,18 +60,18 @@ const main = async () => {
     head: headBranch, //new with fixes branch
     base: baseBranch, //original user branch
     title: `${baseBranch}-withCodeFixes`,
-    body: `${baseBranch} with AppScan CodeSweep code fixes applied.`,
+    body: `This PR is a result of AppScan CodeSweep having applied the suggested code fixes to ${issueNumber}.`,
   });
   console.log('[CodeSweep] Pull request created.');
 
-  console.log(`Pull request created: ${response.data.html_url}`)
+  const newPR = response.data.html_url;
 
   //comment with link to original PR
   octokit.issues.createComment({
     owner,
     repo,
     issue_number: issueNumber,
-    body: `[AppScan CodeSweep] This Pull-Request is linked to `
+    body: `[AppScan CodeSweep] This Pull-Request is referenced in ${newPR}.`
   })
 };
 
