@@ -17,7 +17,7 @@ const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create o
 
 const main = async () => {
 
-  response = await octokit.repos.listCommits({
+  const response = await octokit.repos.listCommits({
       owner: owner,
       repo: repo,
   });
