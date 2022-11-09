@@ -25,7 +25,7 @@ const main = async () => {
   console.log(`[CodeSweep] Latest commit SHA: ${latestCommitSha}`);
   console.log(`[CodeSweep] Latest tree SHA: ${treeSha}`);
 
-  reponse = octokit.git.getTree({
+  response = octokit.git.getTree({
     owner,
     repo,
     treeSha,
