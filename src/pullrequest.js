@@ -15,11 +15,9 @@ const issue = process.env.GITHUB_REF_NAME.split('/');
 const issueNumber = issue[0];
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
-var response;
-
 const main = async () => {
 
-  response = await octokit.repos.listCommits({
+  let response = await octokit.repos.listCommits({
       owner: owner,
       repo: repo,
   });
@@ -65,8 +63,8 @@ const main = async () => {
     body: `${baseBranch} with AppScan CodeSweep code fixes applied.`,
   });
   console.log('[CodeSweep] Pull request created.');
-  const url = response.id;
-  console.log(`issue url ${url}`);
+  const url = response.data.number;
+  console.log(`created pr number ${url}`);
 
   //comment with link to original PR
   octokit.issues.createComment({
