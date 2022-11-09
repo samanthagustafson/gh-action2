@@ -9,7 +9,7 @@ const octokit = new Octokit({
 const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
 const owner = ownerRepo[0];
 const repo = ownerRepo[1];
-const baseBranch = process.env.GITHUB_REF_NAME;
+const baseBranch = process.env.GITHUB_HEAD_REF;
 
 const base = 'test05';              //name of base branch of PR - hardcoded now, but needs to be whatever their base branch is
 const head = base+'-withCodeFix';   //name of new branch we create off of the base
