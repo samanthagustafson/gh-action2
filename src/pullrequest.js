@@ -30,7 +30,8 @@ const main = async () => {
     repo,
     treeSha,
   });
-  console.log(response.data.ref);
+  const treeRef = response.data.ref;
+  console.log(`[CodeSweep] Latest tree REF: ${treeRef}`);
   //on user pull request, get pull request head branch
 
   console.log('[CodeSweep] Creating tree...');
