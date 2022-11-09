@@ -9,13 +9,11 @@ const octokit = new Octokit({
 const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
 const owner = ownerRepo[0];
 const repo = ownerRepo[1];
-const baseBranch = process.env.GITHUB_HEAD_REF;
 
-const base = 'test05';              //name of base branch of PR - hardcoded now, but needs to be whatever their base branch is
-const head = base+'-withCodeFix';   //name of new branch we create off of the base
+const baseBranch = process.env.GITHUB_HEAD_REF; //name of base branch of PR
+const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
 const main = async () => {
-  console.log(`base branch: ${baseBranch}`);
   console.log('[CodeSweep] Getting latest commit SHA...')
   const commits = await octokit.repos.listCommits({
       owner,
@@ -26,15 +24,6 @@ const main = async () => {
   const treeSha = commits.data[0].commit.tree.sha
   console.log(`[CodeSweep] Latest commit SHA: ${latestCommitSha}`);
   console.log(`[CodeSweep] Latest tree SHA: ${treeSha}`);
-
-  response = octokit.git.getTree({
-    owner,
-    repo,
-    treeSha,
-  });
-  const treeRef = response.data.ref;
-  console.log(`[CodeSweep] Latest tree REF: ${treeRef}`);
-  //on user pull request, get pull request head branch
 
   console.log('[CodeSweep] Creating tree...');
   response = await octokit.git.createTree({
@@ -52,7 +41,7 @@ const main = async () => {
   response = await octokit.git.createCommit({
     owner,
     repo,
-    message: `[AppScan CodeSweep] Applied code fixes to ${base} branch`,
+    message: `[AppScan CodeSweep] Applied code fixes to ${baseBranch} branch`,
     tree: newTreeSha,
     parents: [latestCommitSha],
     author: {
@@ -68,11 +57,11 @@ const main = async () => {
     repo,
     ref: `refs/heads/${base}`,
   });*/
-  console.log(`[CodeSweep] Creating branch ${head}...`)
+  console.log(`[CodeSweep] Creating branch ${headBranch}...`)
   const newBranchRef = await octokit.git.createRef({
     owner: owner,
     repo: repo,
-    ref: `refs/heads/${head}`, //refs/heads/${baseBranch}-withCodeFix
+    ref: `refs/heads/${headBranch}`, //refs/heads/${baseBranch}-withCodeFix
     sha: newCommitSha,
   });
 
@@ -83,10 +72,10 @@ const main = async () => {
   octokit.rest.pulls.create({
     owner: owner,
     repo: repo,
-    head: head, //new with fixes branch
-    base: base, //original user branch
-    title: `${base}-withCodeFixes`,
-    body: `${base} with AppScan CodeSweep Code Fixes applied.`,
+    head: headBranch, //new with fixes branch
+    base: baseBranch, //original user branch
+    title: `${baseBranch}-withCodeFixes`,
+    body: `${baseBranch} with AppScan CodeSweep code fixes applied.`,
   });
   console.log('[CodeSweep] Pull request created.');
 
