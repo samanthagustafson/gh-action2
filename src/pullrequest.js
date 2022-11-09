@@ -39,11 +39,7 @@ const main = async () => {
     repo,
     message: `[AppScan CodeSweep] Applied code fixes to ${baseBranch} branch`,
     tree: newTreeSha,
-    parents: [latestCommitSha],
-    committer: {
-      name: 'First Last',
-      email: 'name@email.com'
-    }
+    parents: [latestCommitSha]
   });
   const newCommitSha = response.data.sha;
 
