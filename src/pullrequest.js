@@ -11,23 +11,23 @@ const owner = ownerRepo[0];
 const repo = ownerRepo[1];
 
 const baseBranch = process.env.GITHUB_HEAD_REF; //name of base branch of PR
-const issueNumber = process.env.GITHUB_REF_NAME.split('/');
-const issue = issueNumber[0];
+const issue = process.env.GITHUB_REF_NAME.split('/');
+const issueNumber = issue[0];
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
 const main = async () => {
-  console.log(`issueNumber ${issueNumber} issue ${issue}`)
-  const commits = await octokit.repos.listCommits({
-      owner,
-      repo,
+
+  response = await octokit.repos.listCommits({
+      owner: owner,
+      repo: repo,
   });
 
-  const latestCommitSha = commits.data[0].sha;
-  const treeSha = commits.data[0].commit.tree.sha
+  const latestCommitSha = response.data[0].sha;
+  const treeSha = response.data[0].commit.tree.sha
 
   response = await octokit.git.createTree({
-    owner,
-    repo,
+    owner: owner,
+    repo: repo,
     base_tree: treeSha,
     tree: [
       { path: 'test_file', mode: '100644', content: '' }, //this would be the code fixes
@@ -37,24 +37,24 @@ const main = async () => {
 
   console.log('[CodeSweep] Creating commit with code fixes...')
   response = await octokit.git.createCommit({
-    owner,
-    repo,
-    message: `[AppScan CodeSweep] Applied code fixes to ${baseBranch}`,
+    owner: owner,
+    repo: repo,
+    message: `[AppScan CodeSweep] Applied code fixes...`,
     tree: newTreeSha,
     parents: [latestCommitSha]
   });
   const newCommitSha = response.data.sha;
 
-  console.log(`[CodeSweep] Creating branch ${headBranch}...`)
+  console.log(`[CodeSweep] Creating new branch: ${headBranch}...`)
   await octokit.git.createRef({
     owner: owner,
     repo: repo,
-    ref: `refs/heads/${headBranch}`, //${baseBranch}-withCodeFix
+    ref: `refs/heads/${headBranch}`, 
     sha: newCommitSha,
   });
 
   console.log('[CodeSweep] Creating pull request...');
-  octokit.rest.pulls.create({
+  const response = octokit.pulls.create({
     owner: owner,
     repo: repo,
     head: headBranch, //new with fixes branch
@@ -63,13 +63,16 @@ const main = async () => {
     body: `${baseBranch} with AppScan CodeSweep code fixes applied.`,
   });
   console.log('[CodeSweep] Pull request created.');
+  const url = response.issue_url;
+  console.log(`issue url ${url}`);
 
   //comment with link to original PR
   octokit.issues.createComment({
     owner,
     repo,
-    issue_number: issue,
-    body: 'This is a comment on PR'
+    issue_number: issueNumber,
+    body: `[AppScan CodeSweep] This Pull-Request is linked to `
   })
 };
+
 main();
