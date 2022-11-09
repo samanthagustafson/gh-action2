@@ -10,8 +10,8 @@ const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
 const owner = ownerRepo[0];
 const repo = ownerRepo[1];
 
-const base = 'test04';              //name of branch of PR
-const head = base+'-withCodeFix';   //name of new branch we create
+const base = 'test04';              //name of base branch of PR - hardcoded now, but needs to be whatever their base branch is
+const head = base+'-withCodeFix';   //name of new branch we create off of the base
 
 const main = async () => {
   console.log('[CodeSweep] Getting latest commit SHA...')
@@ -19,14 +19,20 @@ const main = async () => {
       owner,
       repo,
   });
-  
-  const latestTree = commits.data[0].commit.tree;
-  console.log(`tree?: ${latestTree}`);
 
-  const latestCommitSha = commits.data[0].sha;
+  const latestCommitSha = commits.data[0].sha; //latest commit in user PR
   const treeSha = commits.data[0].commit.tree.sha
   console.log(`[CodeSweep] Latest commit SHA: ${latestCommitSha}`);
   console.log(`[CodeSweep] Latest tree SHA: ${treeSha}`);
+
+  reponse = octokit.git.getTree({
+    owner,
+    repo,
+    treeSha,
+  });
+  console.log(`Tree ref ${response.data.ref}`);
+
+  //on user pull request, get pull request head branch
 
   console.log('[CodeSweep] Creating tree...');
   response = await octokit.git.createTree({
@@ -34,22 +40,17 @@ const main = async () => {
     repo,
     base_tree: treeSha,
     tree: [
-      { path: 'test_file', mode: '100644', content: '' },
+      { path: 'test_file', mode: '100644', content: '' }, //this would be the code fixes
     ]
   });
   const newTreeSha = response.data.sha;
   console.log(`[CodeSweep] Created tree: ${newTreeSha}`);
-//pretend user has already opened initial PR against default branch, which triggered codesweep to run
-//pretend suggested fixes were selected and copied
 
-//next step: create new branch to hold code fixes
-//to get current branch name need to parse the PR JSON for head.ref 
-// https://stackoverflow.com/questions/15096331/github-api-how-to-find-the-branches-of-a-pull-request
   console.log('[CodeSweep] Creating commit...')
   response = await octokit.git.createCommit({
     owner,
     repo,
-    message: '[AppScan CodeSweep] Applied code fixes',
+    message: `[AppScan CodeSweep] Applied code fixes to ${base} branch`,
     tree: newTreeSha,
     parents: [latestCommitSha],
     author: {
