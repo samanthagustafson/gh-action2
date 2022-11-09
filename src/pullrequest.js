@@ -11,9 +11,9 @@ const owner = ownerRepo[0];
 const repo = ownerRepo[1];
 
 const baseBranch = process.env.GITHUB_HEAD_REF; //name of base branch of PR
-const issue = process.env.GITHUB_REF_NAME.split('/');
-const issueNumber = issue[0];
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
+
+const issueNumber = process.env.GITHUB_REF_NAME.split('/')[0];
 
 const main = async () => {
 
@@ -23,7 +23,7 @@ const main = async () => {
   });
 
   const latestCommitSha = response.data[0].sha;
-  const treeSha = response.data[0].commit.tree.sha
+  const treeSha = response.data[0].commit.tree.sha;
 
   response = await octokit.git.createTree({
     owner: owner,
@@ -35,7 +35,7 @@ const main = async () => {
   });
   const newTreeSha = response.data.sha;
 
-  console.log('[CodeSweep] Creating commit with code fixes...')
+  console.log('[CodeSweep] Creating commit with code fixes...');
   response = await octokit.git.createCommit({
     owner: owner,
     repo: repo,
@@ -45,7 +45,7 @@ const main = async () => {
   });
   const newCommitSha = response.data.sha;
 
-  console.log(`[CodeSweep] Creating new branch: ${headBranch}...`)
+  console.log(`[CodeSweep] Creating new branch: ${headBranch}...`);
   await octokit.git.createRef({
     owner: owner,
     repo: repo,
@@ -60,7 +60,7 @@ const main = async () => {
     head: headBranch, //new with fixes branch
     base: baseBranch, //original user branch
     title: `${baseBranch}-withCodeFixes`,
-    body: `This PR is a result of AppScan CodeSweep having applied the suggested code fixes to #${issueNumber}.`,
+    body: `This PR was automatically created by AppScan CodeSweep. CodeSweep has applied the suggested code fixes to #${issueNumber}.`,
   });
   console.log('[CodeSweep] Pull request created.');
 
@@ -72,7 +72,7 @@ const main = async () => {
     repo,
     issue_number: issueNumber,
     body: `AppScan CodeSweep has created a copy of this branch and automatically applied the suggested code fixes. Approve and merge ${newPR} first.`
-  })
+  });
 };
 
 main();
