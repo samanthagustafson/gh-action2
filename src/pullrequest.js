@@ -16,7 +16,7 @@ const issue = issueNumber[0];
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
 const main = async () => {
-
+  console.log(`issueNumber ${issueNumber} issue ${issue}`)
   const commits = await octokit.repos.listCommits({
       owner,
       repo,
@@ -65,11 +65,11 @@ const main = async () => {
   console.log('[CodeSweep] Pull request created.');
 
   //comment with link to original PR
-  await octokit.issues.createComment({
+  octokit.issues.createComment({
     owner,
     repo,
     issue_number: issue,
-    body: `This is a comment on PR ${issue}`
+    body: 'This is a comment on PR'
   })
 };
 main();
