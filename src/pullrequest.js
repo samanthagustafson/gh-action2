@@ -63,6 +63,7 @@ const main = async () => {
     body: `${baseBranch} with AppScan CodeSweep code fixes applied.`,
   });
   console.log('[CodeSweep] Pull request created.');
+
   console.log(`Pull request created: ${response.data.html_url}`)
 
   //comment with link to original PR
