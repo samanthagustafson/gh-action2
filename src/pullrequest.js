@@ -12,7 +12,7 @@ const repo = ownerRepo[1];
 
 const baseBranch = process.env.GITHUB_HEAD_REF; //name of base branch of PR
 const issueNumber = process.env.GITHUB_REF_NAME.split('/');
-const issue = issueNumer[0];
+const issue = issueNumber[0];
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
 const main = async () => {
