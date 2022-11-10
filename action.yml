@@ -1,5 +1,12 @@
 name: 'HCL AppScan CodeSweep'
 description: 'Scan for security issues in code'
+inputs:
+  asoc_key:
+    description: 'API key for connecting to ASoC.'
+    required: true
+  asoc_secret:
+    description: 'Secret for connecting to ASoC.'
+    required: true
 runs:
   using: 'node16'
   main: 'src/pullrequest.js'
