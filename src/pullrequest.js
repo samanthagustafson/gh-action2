@@ -53,13 +53,20 @@ const main = async () => {
     sha: newCommitSha,
   });
 
+  response = await octokit.pulls.get({
+    owner: owner,
+    repo: repo,
+    pull_number: issueNumber,
+  });
+  const title = response.data.title;
+
   console.log('[CodeSweep] Creating pull request...');
   response = await octokit.pulls.create({
     owner: owner,
     repo: repo,
     head: headBranch, //new with fixes branch
     base: baseBranch, //original user branch
-    title: `${baseBranch}-withCodeFixes`,
+    title: `${title}-withCodeFixes`, //should match og PR title
     body: `This PR was automatically created by AppScan CodeSweep. CodeSweep has applied the suggested code fixes to #${issueNumber}.`,
   });
   console.log('[CodeSweep] Pull request created.');
