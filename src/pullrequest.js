@@ -10,10 +10,10 @@ const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
 const owner = ownerRepo[0];
 const repo = ownerRepo[1];
 
-const baseBranch = process.env.GITHUB_HEAD_REF; //name of base branch of PR
+const baseBranch = process.env.GITHUB_HEAD_REF;
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
-const issueNumber = process.env.GITHUB_REF_NAME.split('/')[0];
+const headNumber = process.env.GITHUB_REF_NAME.split('/')[0];
 
 const main = async () => {
 
@@ -39,7 +39,7 @@ const main = async () => {
   response = await octokit.git.createCommit({
     owner: owner,
     repo: repo,
-    message: `[AppScan CodeSweep] Applied code fixes`,
+    message: `Applied code fixes`,
     tree: newTreeSha,
     parents: [latestCommitSha]
   });
@@ -56,29 +56,29 @@ const main = async () => {
   response = await octokit.pulls.get({
     owner: owner,
     repo: repo,
-    pull_number: issueNumber,
+    pull_number: headNumber,
   });
-  const title = response.data.title;
+  const headTitle = response.data.title;
 
   console.log('[CodeSweep] Creating pull request...');
   response = await octokit.pulls.create({
     owner: owner,
     repo: repo,
-    head: headBranch, //new with fixes branch
-    base: baseBranch, //original user branch
-    title: `${title}-withCodeFixes`, //should match og PR title
-    body: `This PR was automatically created by AppScan CodeSweep. CodeSweep has applied the suggested code fixes to #${issueNumber}.`,
+    head: headBranch, //code fix branch
+    base: baseBranch, //user branch
+    title: `${headTitle}-withCodeFixes`,
+    body: `This PR was automatically created by AppScan CodeSweep. CodeSweep has applied the suggested code fixes to the PR#${headNumber}.`,
   });
   console.log('[CodeSweep] Pull request created.');
 
-  const newPR = response.data.html_url;
+  const baseNumber = response.data.html_url;
 
   //comment with link to original PR
   octokit.issues.createComment({
     owner,
     repo,
-    issue_number: issueNumber,
-    body: `AppScan CodeSweep has created a copy of this branch and automatically applied the suggested code fixes. Approve and merge ${newPR} first.`
+    issue_number: headNumber,
+    body: `AppScan CodeSweep has created a copy of this branch and automatically applied the suggested code fixes. Approve and merge ${baseNumber} first.`
   });
 };
 
