@@ -26,7 +26,7 @@ function updateFile(file, newContents) {
     }
   });
 
-  return file;
+  return newContents;
 }
 
 const main = async () => {
