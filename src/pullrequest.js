@@ -14,6 +14,18 @@ const baseBranch = process.env.GITHUB_HEAD_REF;
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
 const headNumber = process.env.GITHUB_REF_NAME.split('/')[0];
+var fileName = 'test_file';
+var updatedFile = 'This is the new file contents.\n We have replaced the old contents.';
+function updateFile(file, newContents) {
+    
+  fs.writeFile(file, newContents, function (err) {
+    if (err) {
+      return console.log(err);
+    }
+  });
+
+  return file;
+}
 
 const main = async () => {
 
@@ -30,7 +42,7 @@ const main = async () => {
     repo: repo,
     base_tree: treeSha,
     tree: [
-      { path: 'test_file', mode: '100644', content: '' }, //this would be the code fixes
+      { path: fileName, mode: '100644', content: updateFile(fileName, updatedFile) }, //this would be the code fixes
     ]
   });
   const newTreeSha = response.data.sha;
