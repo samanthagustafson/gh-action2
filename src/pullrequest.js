@@ -1,6 +1,8 @@
 const APPSCAN_CODESWEEP = 'AppScan CodeSweep';
 
+const fs = require('fs');
 const { Octokit } = require('@octokit/rest');
+
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
   baseUrl: process.env.GITHUB_API_URL,
