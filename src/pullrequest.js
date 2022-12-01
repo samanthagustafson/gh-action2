@@ -17,7 +17,8 @@ const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create o
 
 const headNumber = process.env.GITHUB_REF_NAME.split('/')[0];
 var fileName = 'test_file';
-var updatedFile = 'This is the new file contents.\n We have replaced the old contents.';
+var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().setHttpOnly(true);\n\nmyCookie.setHttpOnly(true);\n\ngetCookie("sessionID", config)\n. setHttpOnly (  true  );\n\n//GOOD CODE\nvar1.setHttpOnly(false);\n\nsession.getCookie().setHttpOnly(true);';
+
 function updateFile(file, newContents) {
     
   fs.writeFile(file, newContents, function (err) {
