@@ -1,5 +1,14 @@
-This is a test file.
+Cookie var;
+var.setHttpOnly(false);
 
-I will try to update this file.
+session.getCookie().setHttpOnly(false);
 
-Without erasing the existing contents.
+myCookie.setHttpOnly(false);
+
+getCookie("sessionID", config)
+. setHttpOnly (  false  );
+
+//GOOD CODE
+var1.setHttpOnly(false);
+
+session.getCookie().setHttpOnly(true);
