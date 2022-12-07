@@ -16,21 +16,29 @@ const baseBranch = process.env.GITHUB_HEAD_REF;
 const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
 
 const headNumber = process.env.GITHUB_REF_NAME.split('/')[0];
+var files = ['test_file1', 'test_file2', 'test_file3'];
+var fileContents = ['Contents', null, 'contents2'];
 var fileName = 'test_file';
 var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().setHttpOnly(true);\n\nmyCookie.setHttpOnly(true);\n\ngetCookie("sessionID", config)\n. setHttpOnly (  true  );\n\n//GOOD CODE\nvar1.setHttpOnly(false);\n\nsession.getCookie().setHttpOnly(true);';
+var file2 = '';
+var newTree;
 
-function updateFile(file, newContents) {
-    
-  fs.writeFile(file, newContents, function (err) {
-    if (err) {
-      return console.log(err);
+function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
+  return fileContents[index];
+}
+
+function fillOutTree() {
+  for(let i=0; i<files.length(); i++){
+    if(loopOverFindingsMap(files[i], i) != null){
+      //tree append?
+      newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: loopOverFindingsMap(files[i], i)});
     }
-  });
-
-  return newContents;
+  }
+  console.log("newTree=" + newTree[0] +" "+ newTree[1] +" "+ newTree[2]);
 }
 
 const main = async () => {
+  fillOutTree();
 
   let response = await octokit.repos.listCommits({
       owner: owner,
@@ -44,12 +52,13 @@ const main = async () => {
     owner: owner,
     repo: repo,
     base_tree: treeSha,
-    tree: [
+    /*tree: [
       { path: fileName, mode: '100644', content: updateFile(fileName, updatedFile) }, //this would be the code fixes
-    ]
+    ]*/
+    newTree
   });
+    
   const newTreeSha = response.data.sha;
-
   console.log('[CodeSweep] Creating commit with code fixes...');
   response = await octokit.git.createCommit({
     owner: owner,
