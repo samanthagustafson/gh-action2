@@ -23,19 +23,19 @@ var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().se
 var file2 = '';
 var newTree = [];
 
-async function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
+function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
   if(fileContents[index] == null){
     return null;
   }
   return fileContents[index];
 }
 
-async function fillOutTree() {
+function fillOutTree() {
   for(let i=0; i<files.length; i++){
     var res = null;
-    res = await loopOverFindingsMap(files[i], i);
+    res = loopOverFindingsMap(files[i], i);
     console.log(res);
-    if(res !== undefined && res !== null){
+    if(typeof res === 'undefined' || res === null){
       newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: res });
       if((i+1) < files.length){
         newTree[i] = newTree[i]+",";
