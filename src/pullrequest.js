@@ -29,9 +29,9 @@ function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
 
 function fillOutTree() {
   for(let i=0; i<files.length; i++){
-    if(loopOverFindingsMap(files[i], i) != null){
-      //tree append?
-      newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: loopOverFindingsMap(files[i], i)});
+    let res = loopOverFindingsMap(files[i], i);
+    if(res != null){
+      newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: res })+",";
     }
   }
   console.log("newTree=" + newTree[0] +" "+ newTree[1] +" "+ newTree[2]);
