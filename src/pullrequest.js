@@ -24,14 +24,20 @@ var file2 = '';
 var newTree = [];
 
 function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
+  if(fileContents[index] == null){
+    return null;
+  }
   return fileContents[index];
 }
 
 function fillOutTree() {
   for(let i=0; i<files.length; i++){
     let res = loopOverFindingsMap(files[i], i);
-    if(res != null || res != undefined){
-      newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: res })+",";
+    if(res != null){
+      newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: res });
+      if((i+1) < files.length){
+        newTree[i] = newTree[i]+",";
+      }
     }
   }
   console.log("newTree=" + newTree[0] +" "+ newTree[1] +" "+ newTree[2]);
