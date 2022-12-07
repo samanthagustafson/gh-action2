@@ -21,7 +21,7 @@ var fileContents = ['Contents', null, 'contents2'];
 var fileName = 'test_file';
 var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().setHttpOnly(true);\n\nmyCookie.setHttpOnly(true);\n\ngetCookie("sessionID", config)\n. setHttpOnly (  true  );\n\n//GOOD CODE\nvar1.setHttpOnly(false);\n\nsession.getCookie().setHttpOnly(true);';
 var file2 = '';
-var newTree;
+var newTree = [];
 
 function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
   return fileContents[index];
