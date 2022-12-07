@@ -23,17 +23,17 @@ var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().se
 var file2 = '';
 var newTree = [];
 
-function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
+async function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
   if(fileContents[index] == null){
     return null;
   }
   return fileContents[index];
 }
 
-function fillOutTree() {
+async function fillOutTree() {
   for(let i=0; i<files.length; i++){
     var res = null;
-    res = loopOverFindingsMap(files[i], i);
+    res = await loopOverFindingsMap(files[i], i);
     console.log(res);
     if(res !== undefined && res !== null){
       newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: res });
