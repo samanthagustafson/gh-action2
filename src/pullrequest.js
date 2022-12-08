@@ -38,6 +38,7 @@ async function fillOutTree() {
     if(res == 0){
       console.log("WE ARE NULL");
     } else {
+      console.log(JSON.stringify({ file: files[i], mode: '100644', content: res }));
       newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: res });
       if((i+1) < files.length){
         newTree[i] = newTree[i]+",";
