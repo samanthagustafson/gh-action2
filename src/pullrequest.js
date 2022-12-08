@@ -31,6 +31,7 @@ async function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
 }
 
 async function fillOutTree() {
+  var treeIndex = 0;
   for(let i=0; i<files.length; i++){
     var res = null;
     res = await loopOverFindingsMap(files[i], i);
@@ -43,6 +44,7 @@ async function fillOutTree() {
       if((i+1) < files.length){
         newTree[i] = newTree[i]+",";
       }
+      treeIndex++;
     }
   }
   console.log("newTree=" + newTree[0] +" "+ newTree[1] +" "+ newTree[2]);
