@@ -36,7 +36,7 @@ function fillOutTree() {
     let res = loopOverFindingsMap(files[i], i);
     console.log(res);
     if(res != 0){
-      newTree[treeIndex] = JSON.stringify({ file: files[i], mode: '100644', content: res });
+      newTree[treeIndex] = JSON.stringify({ file: files[i], mode: '100644', content: res }).replace("\\\"", "'");
       /*if((i+1) < files.length){
         newTree[treeIndex] = newTree[treeIndex]+",";
       }*/
