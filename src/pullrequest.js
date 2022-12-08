@@ -37,9 +37,9 @@ function fillOutTree() {
     console.log(res);
     if(res != 0){
       newTree[treeIndex] = JSON.stringify({ file: files[i], mode: '100644', content: res });
-      if((i+1) < files.length){
+      /*if((i+1) < files.length){
         newTree[treeIndex] = newTree[treeIndex]+",";
-      }
+      }*/
       treeIndex++;
     }
   }
