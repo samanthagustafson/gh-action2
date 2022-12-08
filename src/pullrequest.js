@@ -17,15 +17,15 @@ const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create o
 
 const headNumber = process.env.GITHUB_REF_NAME.split('/')[0];
 var files = ['test_file1', 'test_file2', 'test_file3'];
-var fileContents = ['Contents', null, 'contents2'];
+var fileContents = ['Contents', '', 'contents2'];
 var fileName = 'test_file';
 var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().setHttpOnly(true);\n\nmyCookie.setHttpOnly(true);\n\ngetCookie("sessionID", config)\n. setHttpOnly (  true  );\n\n//GOOD CODE\nvar1.setHttpOnly(false);\n\nsession.getCookie().setHttpOnly(true);';
 var file2 = '';
 var newTree = [];
 
 async function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
-  if(fileContents[index] == null){
-    return null;
+  if(fileContents[index].length == 0){
+    return 0;
   }
   return fileContents[index];
 }
@@ -35,7 +35,7 @@ async function fillOutTree() {
     var res = null;
     res = await loopOverFindingsMap(files[i], i);
     console.log(res);
-    if(res === null){
+    if(res == 0){
       console.log("WE ARE NULL");
     } else {
       newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: res });
