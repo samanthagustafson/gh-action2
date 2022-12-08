@@ -35,7 +35,9 @@ function fillOutTree() {
     var res = null;
     res = loopOverFindingsMap(files[i], i);
     console.log(res);
-    if(res){
+    if(res === null){
+      console.log("WE ARE NULL");
+    } else {
       newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: res });
       if((i+1) < files.length){
         newTree[i] = newTree[i]+",";
