@@ -23,23 +23,19 @@ var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().se
 var file2 = '';
 var newTree = [];
 
-async function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
+function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
   if(fileContents[index].length == 0){
     return 0;
   }
   return fileContents[index];
 }
 
-async function fillOutTree() {
+function fillOutTree() {
   var treeIndex = 0;
   for(let i=0; i<files.length; i++){
-    var res = null;
-    res = await loopOverFindingsMap(files[i], i);
+    let res = loopOverFindingsMap(files[i], i);
     console.log(res);
-    if(res == 0){
-      console.log("WE ARE NULL");
-    } else {
-      console.log(JSON.stringify({ file: files[i], mode: '100644', content: res }));
+    if(res != 0){
       newTree[treeIndex] = JSON.stringify({ file: files[i], mode: '100644', content: res });
       if((i+1) < files.length){
         newTree[treeIndex] = newTree[treeIndex]+",";
@@ -47,15 +43,15 @@ async function fillOutTree() {
       treeIndex++;
     }
   }
-  console.log("newTree=" + newTree[0] +" "+ newTree[1] +" "+ newTree[2]);
+  console.log("newTree=" + newTree[0] +" "+ newTree[1]);
 }
 
 const main = async () => {
   fillOutTree();
 
   let response = await octokit.repos.listCommits({
-      owner: owner,
-      repo: repo,
+    owner: owner,
+    repo: repo,
   });
 
   const latestCommitSha = response.data[0].sha;
