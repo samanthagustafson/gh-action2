@@ -40,9 +40,9 @@ async function fillOutTree() {
       console.log("WE ARE NULL");
     } else {
       console.log(JSON.stringify({ file: files[i], mode: '100644', content: res }));
-      newTree[i] = JSON.stringify({ file: files[i], mode: '100644', content: res });
+      newTree[treeIndex] = JSON.stringify({ file: files[i], mode: '100644', content: res });
       if((i+1) < files.length){
-        newTree[i] = newTree[i]+",";
+        newTree[treeIndex] = newTree[treeIndex]+",";
       }
       treeIndex++;
     }
