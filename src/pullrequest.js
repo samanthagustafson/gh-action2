@@ -38,7 +38,7 @@ function fillOutTree() {
     if(res != 0){
       let temp = JSON.stringify({ file: files[i], mode: '100644', content: res });
       console.log("temp before: "+temp);
-      for(let i=0; i<temp.length();i++){
+      for(let i=0; i<temp.length;i++){
         temp = temp.replace("\"", "\"");
       }
       
