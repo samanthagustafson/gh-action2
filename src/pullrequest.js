@@ -68,7 +68,7 @@ const main = async () => {
     /*tree: [
       { path: fileName, mode: '100644', content: updateFile(fileName, updatedFile) }, //this would be the code fixes
     ]*/
-    newTree
+    tree: newTree
   });
     
   const newTreeSha = response.data.sha;
