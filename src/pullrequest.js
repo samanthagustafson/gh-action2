@@ -29,18 +29,19 @@ function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
   }
   return fileContents[index];
 }
-
+newTreeTemp = "\"newTree\":[\"{\"file\":\"test_file1\",\"mode\":\"100644\",\"content\":\"Contents\"}\",\"{\"file\":\"test_file3\",\"mode\":\"100644\",\"content\":\"contents2\"}\"]}";
 function fillOutTree() {
   var treeIndex = 0;
   for(let i=0; i<files.length; i++){
     let res = loopOverFindingsMap(files[i], i);
     console.log(res);
     if(res != 0){
-      newTree[treeIndex] = JSON.stringify({ file: files[i], mode: '100644', content: res }).replace("\\\"", "'");
+      //newTree[treeIndex] = JSON.stringify({ file: files[i], mode: '100644', content: res }).replace("\\\"", "'");
       /*if((i+1) < files.length){
         newTree[treeIndex] = newTree[treeIndex]+",";
       }*/
-      treeIndex++;
+      newTree = newTreeTemp;
+      //treeIndex++;
     }
   }
   console.log("newTree=" + newTree[0] +" "+ newTree[1]);
