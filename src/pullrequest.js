@@ -36,7 +36,7 @@ function fillOutTree() {
     let res = loopOverFindingsMap(files[i], i);
     console.log(res);
     if(res != 0){
-      let temp = [{ file: files[i], mode: '100644', content: res }];
+      let temp = { file: files[i], mode: '100644', content: res };
       console.log("temp before: "+temp);
       console.log("temp after"+temp);
       newTree[treeIndex] = temp;
