@@ -1,12 +1,12 @@
 HttpCookie var;
-var.setSecure(false);
+var.setSecure(true);
 
-session.getCookie().setSecure(false);
+session.getCookie().setSecure(true);
 
-myCookie.setSecure(false);
+myCookie.setSecure(true);
 
 getCookie("sessionID", config)
-. setSecure (  false  );
+. setSecure (  true  );
 
 //GOOD CODE
 var1.setSecure(false);
