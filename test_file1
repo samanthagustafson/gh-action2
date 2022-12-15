@@ -1,0 +1,14 @@
+Cookie var;
+var.setHttpOnly(true);
+
+session.getCookie().setHttpOnly(true);
+
+myCookie.setHttpOnly(true);
+
+getCookie("sessionID", config)
+. setHttpOnly (  true  );
+
+//GOOD CODE
+var1.setHttpOnly(false);
+
+session.getCookie().setHttpOnly(true);
