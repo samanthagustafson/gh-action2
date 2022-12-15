@@ -1,14 +1,3 @@
-HttpCookie var;
-var.setSecure(true);
+//This is a line before.
 
-session.getCookie().setSecure(true);
-
-myCookie.setSecure(true);
-
-getCookie("sessionID", config)
-. setSecure (  true  );
-
-//GOOD CODE
-var1.setSecure(false);
-
-session.getCookie().setSecure(true);
+//This is the final text.
