@@ -17,7 +17,7 @@ const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create o
 
 const headNumber = process.env.GITHUB_REF_NAME.split('/')[0];
 var files = ['test_file1', 'test_file2', 'test_file3'];
-var fileContents = ['Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().setHttpOnly(true);\n\nmyCookie.setHttpOnly(true);\n\ngetCookie("sessionID", config)\n. setHttpOnly (  true  );\n\n//GOOD CODE\nvar1.setHttpOnly(false);\n\nsession.getCookie().setHttpOnly(true);', '', ''];
+var fileContents = ['HttpCookie var;\nvar.setSecure(true);\n\nsession.getCookie().setSecure(true);\n\nmyCookie.setSecure(true);\n\ngetCookie("sessionID", config)\n. setSecure (  true  );\n\n//GOOD CODE\nvar1.setSecure(false);\n\nsession.getCookie().setSecure(true);', '', ''];
 var fileName = 'test_file';
 var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().setHttpOnly(true);\n\nmyCookie.setHttpOnly(true);\n\ngetCookie("sessionID", config)\n. setHttpOnly (  true  );\n\n//GOOD CODE\nvar1.setHttpOnly(false);\n\nsession.getCookie().setHttpOnly(true);';
 var file2 = '';
