@@ -17,7 +17,7 @@ const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create o
 
 const headNumber = process.env.GITHUB_REF_NAME.split('/')[0];
 var files = ['test_file1', 'test_file2', 'test_file3'];
-var fileContents = ['Contents', '', 'contents2'];
+var fileContents = ['Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().setHttpOnly(true);\n\nmyCookie.setHttpOnly(true);\n\ngetCookie("sessionID", config)\n. setHttpOnly (  true  );\n\n//GOOD CODE\nvar1.setHttpOnly(false);\n\nsession.getCookie().setHttpOnly(true);', '', ''];
 var fileName = 'test_file';
 var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().setHttpOnly(true);\n\nmyCookie.setHttpOnly(true);\n\ngetCookie("sessionID", config)\n. setHttpOnly (  true  );\n\n//GOOD CODE\nvar1.setHttpOnly(false);\n\nsession.getCookie().setHttpOnly(true);';
 var file2 = '';
@@ -36,22 +36,14 @@ function fillOutTree() {
     let res = loopOverFindingsMap(files[i], i);
     console.log(res);
     if(res != 0){
-      let temp = { path: files[i], mode: '100644', content: res };
-      console.log("temp before: "+temp);
-      console.log("temp after"+temp);
-      newTree[treeIndex] = temp;
-      /*if((i+1) < files.length){
-        newTree[treeIndex] = newTree[treeIndex]+",";
-      }*/
-      
+      newTree[treeIndex] = { path: files[i], mode: '100644', content: res };   
       treeIndex++;
     }
   }
-  console.log("newTree=" + newTree[0] +" "+ newTree[1]);
 }
 
 const main = async () => {
-  fillOutTree();
+  fillOutTree(); //fills out tree for commit based on files that have been updated
 
   let response = await octokit.repos.listCommits({
     owner: owner,
@@ -65,9 +57,6 @@ const main = async () => {
     owner: owner,
     repo: repo,
     base_tree: treeSha,
-    /*tree: [
-      { path: fileName, mode: '100644', content: updateFile(fileName, updatedFile) }, //this would be the code fixes
-    ]*/
     tree: newTree
   });
     
@@ -104,7 +93,7 @@ const main = async () => {
     head: headBranch, //code fix branch
     base: baseBranch, //user branch
     title: `${headTitle}-withCodeFixes`,
-    body: `This PR was automatically created by AppScan CodeSweep. CodeSweep has applied the suggested code fixes to the PR#${headNumber}.`,
+    body: `This PR was automatically created by AppScan CodeSweep. CodeSweep has applied the suggested code fixes to PR ${headNumber}.`,
   });
   console.log('[CodeSweep] Pull request created.');
 
@@ -115,7 +104,7 @@ const main = async () => {
     owner,
     repo,
     issue_number: headNumber,
-    body: `AppScan CodeSweep has created a copy of this branch and automatically applied the suggested code fixes. Approve and merge ${baseNumber} first.`
+    body: `AppScan CodeSweep has created a copy of this branch and automatically applied the suggested code fixes. Approve and merge PR ${baseNumber} first.`
   });
 };
 
