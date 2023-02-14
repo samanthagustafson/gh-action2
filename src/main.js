@@ -1,4 +1,4 @@
-const utils = require('./utils');
+
 const fs = require('fs');
 const got = require('got');
 const FormData = require('form-data');
