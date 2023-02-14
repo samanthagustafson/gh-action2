@@ -5,7 +5,7 @@ const FormData = require('form-data');
 const core = require('@actions/core');
 
 const URL = 'http://localhost:';
-const PORT = process.env.SERVER_PORT ? process.env.SERVER_PORT : '8080';
+const PORT = process.env.SERVER_PORT ? process.env.SERVER_PORT : '9221';
 const API_SCAN_FILE = '/v1/scanFile';
 const API_LOGIN = '/v1/asoc/login';
 const API_HEALTH = '/actuator/health';
