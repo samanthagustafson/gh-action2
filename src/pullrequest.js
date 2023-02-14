@@ -2,110 +2,114 @@ const APPSCAN_CODESWEEP = 'AppScan CodeSweep';
 
 const fs = require('fs');
 const { Octokit } = require('@octokit/rest');
+const core = require('@actions/core');
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
   baseUrl: process.env.GITHUB_API_URL,
   userAgent: APPSCAN_CODESWEEP
 })
+
 const ownerRepo = process.env.GITHUB_REPOSITORY.split('/');
 const owner = ownerRepo[0];
 const repo = ownerRepo[1];
 
 const baseBranch = process.env.GITHUB_HEAD_REF;
-const headBranch = baseBranch+'-withCodeFix';   //name of new branch we create off of the base
+const headBranch = baseBranch+'-withCodeFix';
 
 const headNumber = process.env.GITHUB_REF_NAME.split('/')[0];
-var files = ['test_file1', 'test_file2', 'test_file3'];
-var fileContents = ['//This is a line before.\nHttpCookie var;\nvar.setSecure(true);\n\nsession.getCookie().setSecure(true);\n\nmyCookie.setSecure(true);\n\ngetCookie("sessionID", config)\n. setSecure (  true  );\n\n//GOOD CODE\nvar1.setSecure(false);\n\nsession.getCookie().setSecure(true);\n\n//This is the final text.', '', ''];
-var fileName = 'test_file';
-var updatedFile = 'Cookie var;\nvar.setHttpOnly(true);\n\nsession.getCookie().setHttpOnly(true);\n\nmyCookie.setHttpOnly(true);\n\ngetCookie("sessionID", config)\n. setHttpOnly (  true  );\n\n//GOOD CODE\nvar1.setHttpOnly(false);\n\nsession.getCookie().setHttpOnly(true);';
-var file2 = '';
 var newTree = [];
+var treeIndex = 0;
 
-function loopOverFindingsMap(file, index) { //stand in loopOverFindingsMap
-  if(fileContents[index].length == 0){
-    return 0;
-  }
-  return fileContents[index];
-}
+function fillOutCommitTree(file, fileContents) { //new fileContents OR null if none
 
-function fillOutTree() {
-  var treeIndex = 0;
-  for(let i=0; i<files.length; i++){
-    let res = loopOverFindingsMap(files[i], i);
-    console.log(res);
-    if(res != 0){
-      newTree[treeIndex] = { path: files[i], mode: '100644', content: res };   
-      treeIndex++;
-    }
+  if(fileContents != null){ 
+    newTree[treeIndex] = { path: file, mode: '100644', content: fileContents };
+    treeIndex++;
   }
 }
 
-const main = async () => {
-  fillOutTree(); //fills out tree for commit based on files that have been updated
+async function performFixAndCreatePR() {
+  var latestCommitSha;
+  var treeSha;
+  var newTreeSha;
+  var newCommitSha;
+  var headTitle;
+  var baseNumber;
 
-  let response = await octokit.repos.listCommits({
-    owner: owner,
-    repo: repo,
-  });
+  return new Promise((resolve, reject) => {
+    octokit.repos.listCommits({
+      owner: owner,
+      repo: repo,
+    })
+    .then((response) => {
+      latestCommitSha = response.data[0].sha;
+      treeSha = response.data[0].commit.tree.sha;
+      return octokit.git.createTree({
+        owner: owner,
+        repo: repo,
+        base_tree: treeSha,
+        tree: newTree
+      });
+    })
+    .then((response) => {
+      newTreeSha = response.data.sha;
+      core.info('[CodeSweep] Creating commit with code fixes...');
+      return octokit.git.createCommit({
+        owner: owner,
+        repo: repo,
+        message: `Applied code fixes`,
+        tree: newTreeSha,
+        parents: [latestCommitSha]
+      });
+    })
+    .then((response) => {
+      newCommitSha = response.data.sha;
+      core.info(`[CodeSweep] Creating new branch: ${headBranch}...`);
+      return octokit.git.createRef({
+        owner: owner,
+        repo: repo,
+        ref: `refs/heads/${headBranch}`, 
+        sha: newCommitSha,
+      });
+    })
+    .then((response) => {
+      return octokit.pulls.get({
+        owner: owner,
+        repo: repo,
+        pull_number: headNumber,
+      });
+    })
+    .then((response) => {
+      headTitle = response.data.title;
+      core.info('[CodeSweep] Creating pull request...');
+      return octokit.pulls.create({
+        owner: owner,
+        repo: repo,
+        head: headBranch, //code fix branch
+        base: baseBranch, //user branch
+        title: `${headTitle}-withCodeFixes`,
+        body: `This PR was automatically created by AppScan CodeSweep. CodeSweep has applied the suggested code fixes to PR ${headNumber}.`,
+      });
+    })
+    .then((response) => {
+      core.info('[CodeSweep] Pull request created.');
+      baseNumber = response.data.html_url;
 
-  const latestCommitSha = response.data[0].sha;
-  const treeSha = response.data[0].commit.tree.sha;
-
-  response = await octokit.git.createTree({
-    owner: owner,
-    repo: repo,
-    base_tree: treeSha,
-    tree: newTree
-  });
-    
-  const newTreeSha = response.data.sha;
-  console.log('[CodeSweep] Creating commit with code fixes...');
-  response = await octokit.git.createCommit({
-    owner: owner,
-    repo: repo,
-    message: `Applied code fixes`,
-    tree: newTreeSha,
-    parents: [latestCommitSha]
-  });
-  const newCommitSha = response.data.sha;
-
-  console.log(`[CodeSweep] Creating new branch: ${headBranch}...`);
-  await octokit.git.createRef({
-    owner: owner,
-    repo: repo,
-    ref: `refs/heads/${headBranch}`, 
-    sha: newCommitSha,
-  });
-
-  response = await octokit.pulls.get({
-    owner: owner,
-    repo: repo,
-    pull_number: headNumber,
-  });
-  const headTitle = response.data.title;
-
-  console.log('[CodeSweep] Creating pull request...');
-  response = await octokit.pulls.create({
-    owner: owner,
-    repo: repo,
-    head: headBranch, //code fix branch
-    base: baseBranch, //user branch
-    title: `${headTitle}-withCodeFixes`,
-    body: `This PR was automatically created by AppScan CodeSweep. CodeSweep has applied the suggested code fixes to PR ${headNumber}.`,
-  });
-  console.log('[CodeSweep] Pull request created.');
-
-  const baseNumber = response.data.html_url;
-
-  //comment with link to original PR
-  octokit.issues.createComment({
-    owner,
-    repo,
-    issue_number: headNumber,
-    body: `AppScan CodeSweep has created a copy of this branch and automatically applied the suggested code fixes. Approve and merge PR ${baseNumber} first.`
-  });
+      //comment with link to original PR
+      return octokit.issues.createComment({
+        owner,
+        repo,
+        issue_number: headNumber,
+        body: `AppScan CodeSweep has created a copy of this branch and automatically applied the suggested code fixes. Approve and merge PR ${baseNumber} first.`
+      });
+    })
+    .catch((error) => {
+      core.info("Caught error: " + error);
+      reject(error);
+    })
+    resolve();
+  })
 };
 
-main();
+module.exports = { fillOutCommitTree, performFixAndCreatePR }
